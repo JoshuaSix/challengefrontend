@@ -1,41 +1,49 @@
-
+import { useEffect, useState } from 'react'
 import './App.css'
+import axios from 'axios';
+import ChallengeList from './ChallengeList';
+import Challenge from './challenge';
+import AddChallenge from './AddChallenge';
 
 function App() {
+  const [challenges, setChallenges] = useState([
+  ]);
+
+   const fetchChallenges = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/challenges');
+      console.log("response data>>>>>>", response.data);
+      setChallenges(response.data);
+    }
+    catch (error) {
+      console.log("error message>>>>>>", error);
+    }
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchChallenges();
+  }, []);
 
 
-  return (
-    <>
-    <div className= "font-geist p-4 space-y-4 ">
-      <h1 className= "text-3xl font-semibold text-center color-gray-900"
-       >Monthly Challenges Application</h1>
+
+    const handleChallengeAdded = () => {
+      fetchChallenges();
+    };
 
 
-        <div className="border p-4 rounded space-y-4 color-gray-900 background-gray-100">
-          <h4>Add New Challenge</h4>
+    return (
 
-          <label htmlFor="">Month</label>
-          <input type="text" placeholder='e.g January'/>
+      <>
+        <AddChallenge onHandleChallenge={handleChallengeAdded} />
+        <ChallengeList challenges={challenges} />
 
 
-          <label htmlFor="">Description</label>
-          <input type="text" placeholder='Describe the challenge'/>
 
-          <button>Submit</button>
-        </div>
 
-    </div>
+      </>
+    )
+  }
 
-    <div>
-      <p>January</p>
-      <p>Building a full-stack application</p>
 
-      <p>February</p>
-      <p>Launching a blog to share my learning</p>
-    </div>
-      
-    </>
-  )
-}
-
-export default App
+  export default App;
